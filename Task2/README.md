@@ -75,3 +75,21 @@ mvn test "-Dmaven.test.failure.ignore=true"
 
 Детальные результаты прогона:
 `Task2/target/surefire-reports`
+
+
+## Линтер и форматтер
+Для тестового Java-кода настроены:
+- `spotless` (форматирование) — конфигурация в `pom.xml`;
+- `checkstyle` (линтинг) — правила в [`checkstyle.xml`](./checkstyle.xml).
+
+Команды:
+```bash
+# автоформат test-кода
+mvn spotless:apply
+
+# проверка формата test-кода
+mvn spotless:check
+
+# линтинг test-кода
+mvn checkstyle:check
+```
