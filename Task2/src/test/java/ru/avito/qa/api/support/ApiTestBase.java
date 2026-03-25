@@ -41,16 +41,20 @@ public abstract class ApiTestBase {
     }
 
     protected CreatedItem createValidItem() {
-        ObjectNode payload = ItemPayloadFactory.validPayload();
+        return createValidItem(ItemPayloadFactory.randomSellerId());
+    }
+
+    protected CreatedItem createValidItem(int sellerId) {
+        ObjectNode payload = ItemPayloadFactory.validPayload(sellerId);
         ApiResponse response = createItemEndpoint.create(payload, jsonHeaders());
         assertEquals(200, response.statusCode(),
                 () -> "Не выполнено предусловие: создание валидного объявления вернуло " + response.statusCode() + ", тело: " + response.body());
         ObjectNode created = firstObject(response.json(), "создание валидного объявления");
         String id = extractCreatedItemId(created, "создание валидного объявления");
-        int sellerId = created.has("sellerId") && created.get("sellerId").isNumber()
+        int resolvedSellerId = created.has("sellerId") && created.get("sellerId").isNumber()
                 ? created.get("sellerId").asInt()
                 : payload.get("sellerID").asInt();
-        return new CreatedItem(id, sellerId, payload);
+        return new CreatedItem(id, resolvedSellerId, payload);
     }
 
     protected ObjectNode firstObject(JsonNode responseJson, String context) {
